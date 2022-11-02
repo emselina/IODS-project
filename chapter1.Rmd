@@ -3,11 +3,33 @@
 
 *Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you should use R Markdown syntax.*
 
+This is my course diary for the Open Data Science course 2022. 
+
+Link to my GitHub repository: <https://github.com/emselina/IODS-project.git>  
+
 ```{r}
 # This is a so-called "R chunk" where you can write R code.
 
 date()
 
 ```
-The text continues here.
+# Assignment 1.
+
+Link to my GitHub repository:
+[Elina GitHub IODS](https://github.com/emselina/IODS-project.git)
+
+<https://github.com/emselina/IODS-project.git> 
+
+
+*Just write some of your thoughts about this course freely in the file, e.g., How are you feeling right now? What do you expect to learn? Where did you hear about the course?*
+
+I feel curious about the course and interested to learn new things. I expect to learn more about R and RStudio. **GitHub** I have never used before so that I would like to learn to deposit my own R codes in the future. I would like to learn the core themes of open data science and how to use them in my own research.
+
+
+
+*Also reflect on your learning experiences with the R for Health Data Science book and the Exercise Set 1: How did it work as a "crash course" on modern R tools and using RStudio? Which were your favorite topics? Which topics were most difficult? Some other comments on the book and our new approach of getting started with R Markdown etc.?*
+
+I think the <mark>Health Data Science book</mark>  contained a lot of useful information about R and RStudio and also good examples.
+
+My favorite topic in the book was the different types of plots section and also the R basics. I have not used the pipe function %>% before so that was useful information. The most difficult parts I believe will be the data analysis part: linear regression, logistic regression etc. that I have not done before.
 
