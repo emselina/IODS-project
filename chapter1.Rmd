@@ -34,5 +34,6 @@ I think the <mark>Health Data Science book</mark>  contained a lot of useful inf
 My favorite topic in the book was the different types of plots section and also the R basics. I have not used the pipe function %>% before so that was useful information. The most difficult parts I believe will be the data analysis part: linear regression, logistic regression etc. that I have not done before.
 
 
-I also created a Personal Access Token (PAT) but everything worked before creating it as well. 
+I also created a Personal Access Token (PAT) but everything worked before creating it as well.
+
 
