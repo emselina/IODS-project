@@ -179,7 +179,7 @@ my_datesdiff %>% class()
 ymd_hm("2021-01-02 12:00") + my_datesdiff
 
 # another error challenge here... (again you may put '#' in front of that afterwards)
-560/my_datesdiff
+#560/my_datesdiff
 560/as.numeric(my_datesdiff)
 ```
 
@@ -288,8 +288,8 @@ gbd_short %>%
 
 ```{r}
 # do you see what is wrong here? (you may fix it or hide it with '#' afterwards)
-gbd_short %>% 
- filter(year = 1995)
+#gbd_short %>% 
+ #filter(year = 1995)
 
 gbd_short %>% 
   filter(year == 1995 | year == 2017)
