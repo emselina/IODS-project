@@ -1,5 +1,4 @@
-# Insert chapter 2 title here
-
+# Assignment 2
 *Describe the work you have done this week and summarize your learning.*
 
 - Describe your work and results clearly. 
@@ -12,4 +11,3 @@ date()
 
 Here we go again...
 
-#Assignment 2. 
