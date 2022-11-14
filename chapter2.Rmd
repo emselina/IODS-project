@@ -93,8 +93,9 @@ surf_deep
 
 library(GGally)
 library(ggplot2)
-# create an plot matrix with ggpairs()
-ggpairs(students14, lower = list(combo = wrap("facethist", bins = 20)))
+
+p <- ggpairs(students14, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
+p
 
 # create a regression model with multiple explanatory variables
 my_model <- lm(points ~ attitude + surf + stra, data = students14)
@@ -113,7 +114,7 @@ Only explanatory variable that has significant relationship with the target vari
 
 
 
-Fit the model without explanatory variables that do not have a statistically significant relationship with the target variable. 
+*Fit the model without explanatory variables that do not have a statistically significant relationship with the target variable.*
 
 
 
