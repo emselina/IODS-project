@@ -170,7 +170,7 @@ Coefficients:
 
 The p-value tells if there is a significant correlation between the explanatory variable and target variable. The p-value of the my_model2 is 4.12e-19 so attitude has significant correlation with the points received from the exam. 
 
-Intercept: This means the average exam score is 11.6 when the attitude towards staticts learning is 0. 
+Intercept: This means the average exam score is 11.6 when the attitude towards statistics learning is 0. 
 
 Std.Error:  shows the standard deviation of the coefficient. The standard error is used to create confidence intervals. 
 
