@@ -68,7 +68,7 @@ From the graphigal overview is can be see that the variable `Age` is a positivel
 
 There is statistically significant positive correlation between `points` and `attitude` in both females and males. The variable with the second highest absolute correlation with `Points` is `stra` and third highest absolute correlation with `Points` is `surf`
 
-There is also negative correlation between `surf` and `deep`, but only significant correlation is in the male participants. There is also negative correlation between `surf` and `attitude` and surf and `stra`. 
+There is also negative correlation between `surf` and `deep` (figure below), but only significant correlation is in the male participants. There is also negative correlation between `surf` and `attitude` and surf and `stra`. 
 
 
 ```{r}
@@ -91,11 +91,6 @@ surf_deep
 
 ```{r}
 
-library(GGally)
-library(ggplot2)
-
-p <- ggpairs(students14, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
-p
 
 # create a regression model with multiple explanatory variables
 my_model <- lm(points ~ attitude + surf + stra, data = students14)
@@ -108,7 +103,9 @@ my_model %>%
 
 
 
-Only explanatory variable that has significant relationship with the target variable`Points` is `attitude` so I decided to drop the other two explatory variables `surf` and `stra`. 
+Only explanatory variable that has significant relationship with the target variable `points` is `attitude` so I decided to drop the other two explanatory variables `surf` and `stra`. This is based on the Pr(>|t|) values and for `surf` and `stra` these values are above 0.1 so these have no significant correlation with `points`. The Pr(>|t|) value of `attitude` is 1.93e-08 *** so there is significant positive correlation with `points`.  
+
+Other parameters of the linear regression are explained in the fitted model below. 
 
 
 
