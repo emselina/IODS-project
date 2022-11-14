@@ -404,7 +404,7 @@ use R Markdown syntax.</em></p>
 <pre class="r"><code># This is a so-called &quot;R chunk&quot; where you can write R code.
 
 date()</code></pre>
-<pre><code>## [1] &quot;Mon Nov 14 18:05:19 2022&quot;</code></pre>
+<pre><code>## [1] &quot;Mon Nov 14 18:25:36 2022&quot;</code></pre>
 </div>
 <div id="assignment-1." class="section level1">
 <h1>Assignment 1.</h1>
@@ -448,7 +448,7 @@ writing and reading R code as well as statistical methods.</li>
 advanced methods you are using.</li>
 </ul>
 <pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Mon Nov 14 18:05:19 2022&quot;</code></pre>
+<pre><code>## [1] &quot;Mon Nov 14 18:25:36 2022&quot;</code></pre>
 <p>Here we go again…</p>
 <div id="data-wrangling" class="section level2">
 <h2>Data wrangling</h2>
@@ -590,16 +590,40 @@ my_model %&gt;%
 ## Residual standard error: 5.296 on 162 degrees of freedom
 ## Multiple R-squared:  0.2074, Adjusted R-squared:  0.1927 
 ## F-statistic: 14.13 on 3 and 162 DF,  p-value: 3.156e-08</code></pre>
-<p>Only explanatory variable that has significant relationship with the
-target variable <code>points</code> is <code>attitude</code> so I
-decided to drop the other two explanatory variables <code>surf</code>
-and <code>stra</code>. This is based on the Pr(&gt;|t|) values and for
-<code>surf</code> and <code>stra</code> these values are above 0.1 so
-these have no significant correlation with <code>points</code>. The
-Pr(&gt;|t|) value of <code>attitude</code> is 1.93e-08 *** so there is
-significant positive correlation with <code>points</code>.</p>
-<p>Other parameters of the linear regression are explained in the fitted
-model below.</p>
+<p>The Residuals:</p>
+<p>A residual is a measure of how far away a point is vertically from
+the regression line. Simply, it is the error between a predicted value
+and the observed actual value. In this case the median residuals is
+0.5156 so it is quite close to 0, it is positive because residuals are
+above the regression line.</p>
+<p>Intercept: This means the average exam score is 11.1 when the
+attitude towards statistics learning is 0 and score for strategic, deep
+and surface questions is 0.</p>
+<p>Std.Error: shows the standard deviation of the coefficient. The
+standard error is used to create confidence intervals.</p>
+<p>t-value: The t-value measures the size of the difference relative to
+the variation in your sample data. Put another way, T is the calculated
+difference represented in units of standard error. The greater the
+magnitude of T, the greater the evidence against the null hypothesis.
+This means there is greater evidence that there is a significant
+difference. The closer T is to 0, the more likely there isn’t a
+significant difference. Compared to the strategic learning and the deep
+learning, the t value of attitude is not close to 0, indicating that the
+coefficient is not zero.</p>
+<p>Multiple R-squared: This is known as the coefficient of
+determination. It is the proportion of the variance in the response
+variable that can be explained by the explanatory variables. In this
+example, 20% of the variation in the exam scores can be explained by the
+attitude..</p>
+<p>To conclude the only explanatory variable that has significant
+relationship with the target variable <code>points</code> is
+<code>attitude</code> so I decided to drop the other two explanatory
+variables <code>surf</code> and <code>stra</code>. This is based on the
+Pr(&gt;|t|) values and for <code>surf</code> and <code>stra</code> these
+values are above 0.1 so these have no significant correlation with
+<code>points</code>. The Pr(&gt;|t|) value of <code>attitude</code> is
+1.93e-08 *** so there is significant positive correlation with
+<code>points</code>.</p>
 <p><em>Fit the model without explanatory variables that do not have a
 statistically significant relationship with the target
 variable.</em></p>
