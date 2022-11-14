@@ -11,3 +11,204 @@ date()
 
 Here we go again...
 
+## Data wrangling
+
+The data wrangling part and the R scipt created are in the data folder in: <https://github.com/emselina/IODS-project/blob/master/data/create_learning2014.R>
+
+
+## Data analysis
+
+
+***1. Read the students2014 data into R either from your local folder (if you completed the Data wrangling part) or from this url: https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/learning2014.txt . (The separator is a comma "," and the file includes a header). Explore the structure and the dimensions of the data and describe the dataset briefly, assuming the reader has no previous knowledge of it. There is information related to the data here. (0-2 points)***
+
+
+I did the data wrangling part so I will use the data that I created:
+
+
+```{r}
+#students14 <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/learning2014.txt", sep=",", header=TRUE)
+
+students14 <- read.csv("data/learning2014.csv")
+```
+
+```{r}
+dim(students14)
+str(students14)
+```
+This students2014 dataset has 166 rows and 7 columns. So this dataset has 166 observations and we excluded those who have obtained 0 for Exam Points. This dataset is from international survey of Approaches to Learning. In the survey basic details about age and gender were asked and questions were divided to deep questions (deep), strategic questions (stra), surface questions (surf). In addition points from the exam of the course is reported in the dataset and global attitude towards statistics. Attitude and the questions are measured on the Likert scale (1-5). So there is 7 variables is this dataset:  `gender`,`Age`, `Attitude`, `deep`, `stra`, `surf` and `Points`.The attitude variable was created in the data wrangling part by dividing by 10 the original attitude data to get it to the same scale as others. The deep, stra and surf were created by taken the mean values of each type of questions.  
+
+
+
+
+
+***2. Show a graphical overview of the data and show summaries of the variables in the data. Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them. (0-3 points)***
+
+
+
+```{r}
+summary (students14)
+```
+```{r}
+# access the GGally and ggplot2 libraries
+library(GGally)
+library(ggplot2)
+```
+
+```{r}
+p <- ggpairs(students14, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
+p
+```
+
+From the summary of the data the minimum `Age` is 17 and highest 55, mean age 22.5. The `attitude` points minimum is 1.4 and maximum 5.0, with mean of 3.14 and the min for `deep` is 1.58, max 4.9 and mean 3.68. The minimum for `stra` is 1.25, max 5.0 and mean 3.1. For `surf` minimum value is 1.58, max 4.3 and mean 2.7. For `Points` the min is 7 max 33 and mean 22.7. 
+
+
+The variable gender is categorical variable so it can not be used in the statistical tests as a variable. 
+
+From the graphigal overview is can be see that the variable `Age` is a positively skewed distribution, variable `attitude` shows almost like normal distribution but some differences are between genders, the females are skewed to the right and males skewed to the left. The variable `deep` shows negatively skewed distribution and distribution of `surf` slightly positively skewed distribution. 
+
+There is statistically significant positive correlation between `points` and `attitude` in both females and males. The variable with the second highest absolute correlation with `Points` is `stra` and third highest absolute correlation with `Points` is `surf`
+
+There is also negative correlation between `surf` and `deep`, but only significant correlation is in the male participants. There is also negative correlation between `surf` and `attitude` and surf and `stra`. 
+
+
+```{r}
+surf_deep <- ggplot(students14, aes(x = surf, y = deep)) +
+  labs(title="Plot of surf and deep questions",x="surf", y = "deep")
+surf_deep <- surf_deep + geom_point(colour = "blue") + theme_classic() + geom_smooth(method = "lm")
+surf_deep
+```
+
+
+
+***3. Choose three variables as explanatory variables and fit a regression model where exam points is the target (dependent, outcome) variable. Show a summary of the fitted model and comment and interpret the results. Explain and interpret the statistical test related to the model parameters. If an explanatory variable in your model does not have a statistically significant relationship with the target variable, remove the variable from the model and fit the model again without it. (0-4 points)***
+
+
+
+
+*Multiple regression*
+
+
+
+```{r}
+
+library(GGally)
+library(ggplot2)
+# create an plot matrix with ggpairs()
+ggpairs(students14, lower = list(combo = wrap("facethist", bins = 20)))
+
+# create a regression model with multiple explanatory variables
+my_model <- lm(points ~ attitude + surf + stra, data = students14)
+
+my_model %>% 
+  summary()
+
+
+```
+
+
+
+Only explanatory variable that has significant relationship with the target variable`Points` is `attitude` so I decided to drop the other two explatory variables `surf` and `stra`. 
+
+
+
+
+
+Fit the model without explanatory variables that do not have a statistically significant relationship with the target variable. 
+
+
+
+
+```{r}
+
+library(GGally)
+library(ggplot2)
+
+library(ggplot2)
+qplot(points, attitude, data = students14) + geom_smooth(method = "lm")
+
+
+# create a regression model with only statistically significant explanatory variables
+my_model2 <- lm(points ~ attitude, data = students14)
+
+my_model2 %>% 
+  summary()
+
+
+```
+
+
+
+
+
+***4. Using a summary of your fitted model, explain the relationship between the chosen explanatory variables and the target variable (interpret the model parameters). Explain and interpret the multiple R-squared of the model. (0-3 points)***
+
+
+```{r}
+my_model2 %>% 
+  summary()
+
+```
+
+The linear regression coefficients describe the mathematical relationship between each independent variable and the dependent variable. The p values for the coefficients indicate whether these relationships are statistically significant.
+
+
+The Residuals:
+
+A residual is a measure of how far away a point is vertically from the regression line. Simply, it is the error between a predicted value and the observed actual value. In this case the median residuals is 0.4339 so it is quite close to 0, it is positive because residuals are above the regression line. 
+
+
+Coefficients:
+
+
+The p-value tells if there is a significant correlation between the explanatory variable and target variable. The p-value of the my_model2 is 4.12e-19 so attitude has significant correlation with the points received from the exam. 
+
+Intercept: This means the average exam score is 11.6 when the attitude towards staticts learning is 0. 
+
+Std.Error:  shows the standard deviation of the coefficient. The standard error is used to create confidence intervals. 
+
+t-value: according to the t-value we can reject the null hypothesis: the slope for attitude is not equal to zero. 
+
+Multiple R-squared:  This is known as the coefficient of determination. It is the proportion of the variance in the response variable that can be explained by the explanatory variables. In this example, 19% of the variation in the exam scores can be explained by the attitude..
+
+
+***5. Produce the following diagnostic plots: Residuals vs Fitted values, Normal QQ-plot and Residuals vs Leverage. Explain the assumptions of the model and interpret the validity of those assumptions based on the diagnostic plots. (0-3 points)***
+
+
+
+
+```{r}
+
+par(mfrow = c(2,2))
+
+plot(my_model2, c(1,2,5))
+```
+
+Residuals vs Fitted: The plot is used to detect non-linearity, unequal error variances, and outliers. 
+
+The residuals "bounce randomly" around the 0 line. This suggests that the assumption that the relationship is linear is reasonable.
+
+The residuals roughly form a "horizontal band" around the 0 line. This suggests that the variances of the error terms are equal.
+
+If No one residual "stands out" from the basic random pattern of residuals. This suggests that there are no outliers. In my_model2 there is maybe the few residuals that 
+
+Normal Q-Q
+
+The Q-Q plot, or quantile-quantile plot, is a graphical tool to help us assess if a set of data plausibly came from some theoretical distribution such as a Normal or exponential.This plot of my_model2 shows normal distribution, only few points are outside the straight line. 
+
+Residuals vs Leverage
+
+Residuals vs Leverage is a type of diagnostic plot that allows us to identify influential observations in a regression model.Each observation from the dataset is shown as a single point within the plot. The x-axis shows the leverage of each point and the y-axis shows the standardized residual of each point. If any point in this plot falls outside of Cook’s distance then it is considered to be an influential observation. In my_model2 no observations lie outside the Cook´s distance so this means there are not any influential points in our regression model.
+
+
+
+Another easier way to produce diagnostics plots:
+
+```{r}
+library(ggfortify)
+autoplot(my_model2)
+```
+
+
+
+
+

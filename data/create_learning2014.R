@@ -45,8 +45,14 @@ strategic_columns <- select(lrn14, one_of(strategic_questions))
 # and create column 'stra' by averaging
 lrn14$stra <- rowMeans(strategic_columns)
 
+
+#Divide Attitude by 10
+lrn14$attitude <- lrn14$Attitude / 10
+
+lrn14$points <- lrn14$Points
+
 #create analysis dataset
-analysis_dataset <- c("gender", "Age", "Attitude", "deep", "stra", "surf", "Points")
+analysis_dataset <- c("gender", "Age", "attitude", "deep", "stra", "surf", "points")
 
 # select the columns
 
@@ -55,12 +61,12 @@ analysis_columns <- select(lrn14, one_of(analysis_dataset))
 
 #Exclude observations where the exam points variable is zero.
 
-analysis_columns <- filter(analysis_columns, Points !=0)
+analysis_columns <- filter(analysis_columns, points !=0)
 
 
 dim(analysis_columns)
 
-[1] 166   7
+#[1] 166   7
 
 #4.
 #Set the working directory of your R session to the IODS Project folder (study how to do this with RStudio). 
@@ -69,14 +75,14 @@ dim(analysis_columns)
 #Demonstrate that you can also read the data again by using read_csv().  
 #(Use `str()` and `head()` to make sure that the structure of the data is correct).  (3 points)
 
-setwd("IODS_project")
+#setwd("IODS_project")
 #Error in setwd("IODS_project") : cannot change working directory
 
-write_csv(analysis_columns, "data/learning2014.csv")
+write.csv(analysis_columns, "data/learning2014.csv")
 
 analysis_columns2 <- read.csv("data/learning2014.csv")
 dim(analysis_columns2)
-[1] 166   7
+#[1] 166   7
 
 str(analysis_columns2)
 
