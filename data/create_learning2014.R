@@ -78,7 +78,7 @@ dim(analysis_columns)
 #setwd("IODS_project")
 #Error in setwd("IODS_project") : cannot change working directory
 
-write.csv(analysis_columns, "data/learning2014.csv")
+write.csv(analysis_columns, "data/learning2014.csv", row.names = FALSE)
 
 analysis_columns2 <- read.csv("data/learning2014.csv")
 dim(analysis_columns2)

@@ -28,7 +28,7 @@ I did the data wrangling part so I will use the data that I created:
 ```{r}
 #students14 <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/learning2014.txt", sep=",", header=TRUE)
 
-students14 <- read.csv("data/learning2014.csv")
+students14 <- read.csv("data/learning2014.csv", sep=",", header=TRUE)
 ```
 
 ```{r}
