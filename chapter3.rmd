@@ -1,0 +1,230 @@
+---
+title: "chapter3.Rmd"
+author: "Elina Sohlberg"
+date: "2022-11-16"
+output: html_document
+---
+
+# Assignment 3
+
+
+## Data wrangling
+
+I did the data wrangling and the R script is found here: 
+
+## Data Analysis
+
+
+The joined data set used in the analysisexercise combines the two student alcohol consumption data sets. The following adjustments have been made:
+
+The variables not used for joining the two data have been combined by averaging (including the grade variables)
+'alc_use' is the average of 'Dalc' and 'Walc'
+'high_use' is TRUE if 'alc_use' is higher than 2 and FALSE otherwise
+
+*2.*
+
+```{r}
+#alc <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/alc.csv", sep=",", header=TRUE)
+
+alc <- read.csv("data/alc.csv", sep=",", header=TRUE)
+colnames(alc)
+dim(alc)
+str(alc)
+```
+This dataset is combined from the two student alcohol consumption data sets. The data attributes include student grades, demographic, social and school related features) and it was collected by using school reports and questionnaires. Two datasets are provided regarding the performance in two distinct subjects: Mathematics (mat) and Portuguese language (por).
+We only kept the students who answered the questionnaire in both math and Portuguese classes.
+The dataset has 370 observations and 35 variables, including character variables, numeric variables, logical variable and integer variables.
+Duplicated' answers from same student were combined in the dataset. 
+
+
+*3. The purpose of your analysis is to study the relationships between high/low alcohol consumption and some of the other variables in the data. To do this, choose 4 interesting variables in the data and for each of them, present your personal hypothesis about their relationships with alcohol consumption. (0-1 point)*
+
+```{r}
+library(tidyr); library(dplyr); library(ggplot2)
+gather(alc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()
+
+```
+
+From the dataset I chose the variables `sex`, `failures`, `absences` and `goout` and final grade (`G3`). My hypothesis is that alcohol consumption is higher in men and there is statistically significant correlation between failures (number of past class failures), absences (number of school absences), going out with friends (goot) and final grade (G3) with alcohol consumption. 
+
+Null hypothesis?
+
+*4. Numerically and graphically explore the distributions of your chosen variables and their relationships with alcohol consumption (use for example cross-tabulations, bar plots and box plots). Comment on your findings and compare the results of your exploration to your previously stated hypotheses. (0-5 points)*
+
+```{r}
+alc %>% group_by(sex, high_use) %>% summarise(count = n(), mean_grade = (mean(G3)), class_failures = failures, absences = absences, going_out = goout)
+
+```
+
+Sex, grades and alcohol consumption
+
+```{r}
+# initialize a plot of high_use and G3
+g1 <- ggplot(alc, aes(x = high_use, y = G3, col=sex))
+
+# define the plot as a boxplot and draw it
+g1 + geom_boxplot() + ylab("grade") + ggtitle("Student grades by alcohol consumption and sex")
+
+
+```
+
+
+Sex, absences and alcohol consumption
+
+```{r}
+# initialize a plot of high_use and absences
+g2 <- ggplot(alc, aes(x = high_use, y = absences, col=sex))
+
+# define the plot as a box plot and draw it
+g2 + geom_boxplot() + ylab("absences") + ggtitle("Student absences by alcohol consumption and sex")
+```
+
+Sex, going out with friends and alcohol consumption
+
+```{r}
+# initialize a plot of high_use and absences
+g3 <- ggplot(alc, aes(x = high_use, y = goout, col=sex))
+
+# define the plot as a box plot and draw it
+g3 + geom_boxplot() + ylab("going out with friends") + ggtitle("Student amount of time going out with friends by alcohol consumption and sex")
+```
+
+Male students with lower final grade from the course had higher alcohol consumption. In females same kind of correlation was not seen. 
+
+In students with higher number of school absences the alcohol consumption was higher only in men. 
+
+The alcohol consumption was higher in men and women that went out more with their friends. There were not much variation between men and women and alcohol consumption increased in both groups when the time spent with friends increased. 
+
+The hypothesis was right that school absences and lower final grade had impact on alcohol consumption and that it was seen in male group. 
+Also time spent going out with friends had correlation with alcohol consumption but that was seen also in women so my hypothesis that men would have higher alchohol consumption was not true in with this variable. 
+
+*5. Use logistic regression to statistically explore the relationship between your chosen variables and the binary high/low alcohol consumption variable as the target variable. Present and interpret a summary of the fitted model. Present and interpret the coefficients of the model as odds ratios and provide confidence intervals for them. Interpret the results and compare them to your previously stated hypothesis. Hint: If your model includes factor variables see for example the RHDS book or the first answer of this stackexchange thread on how R treats and how you should interpret these variables in the model output (or use some other resource to study this). (0-5 points)*
+
+
+```{r}
+# find the model with glm()
+m <- glm(high_use ~ failures + absences + goout + sex, data = alc, family = "binomial")
+
+# print out a summary of the model
+m %>% 
+  summary()
+
+# print out the coefficients of the model
+
+m %>%
+coef()
+
+```
+
+The p-value of the variables absences, goout and sex had p-value lower than 0.001 so these variables had significant relationship with the target variable high/low alcohol consumption. The variable failures had p-value lower than 0.05 but higher than 0.01 so there was some correlation but it was not as significant as with the other variables. 
+
+
+
+```{r}
+# compute odds ratios (OR)
+OR <- coef(m) %>% exp 
+
+# compute confidence intervals (CI)
+CI <- confint(m) 
+
+# print out the odds ratios with their confidence intervals
+cbind(OR, CI)
+```
+
+*6. Using the variables which, according to your logistic regression model, had a statistical relationship with high/low alcohol consumption, explore the predictive power of you model. Provide a 2x2 cross tabulation of predictions versus the actual values and optionally display a graphic visualizing both the actual values and the predictions. Compute the total proportion of inaccurately classified individuals (= the training error) and comment on all the results. Compare the performance of the model with performance achieved by some simple guessing strategy. (0-3 points)*
+
+Variables absences, goout and sex had the highest statistical relationship with high/low alcohol consumption so I included them to the model. 
+
+```{r}
+# fit the model
+m <- glm(high_use ~ absences + goout + sex, data = alc, family = "binomial")
+
+# predict() the probability of high_use
+probabilities <- predict(m, type = "response")
+
+library(dplyr)
+# add the predicted probabilities to 'alc'
+alc <- mutate(alc, probability = probabilities)
+
+# use the probabilities to make a prediction of high_use
+alc <- mutate(alc, prediction = probabilities > 0.5)
+
+
+# see the last ten original classes, predicted probabilities, and class predictions
+select(alc, absences, sex, goout, high_use, probability, prediction) %>% tail(10)
+
+# tabulate the target variable versus the predictions
+table(high_use = alc$high_use, prediction = alc$prediction)
+
+
+```
+
+
+graphic visualization:
+```{r}
+# initialize a plot of 'high_use' versus 'probability' in 'alc'
+g <- ggplot(alc, aes(x = probability, y = high_use, col = prediction))
+
+# define the geom as points and draw the plot
+g + geom_point()
+
+# tabulate the target variable versus the predictions
+table(high_use = alc$high_use, prediction = alc$prediction)%>% 
+  prop.table()%>%
+  addmargins()
+```
+
+
+training error
+
+```{r}
+# define a loss function (mean prediction error)
+loss_func <- function(class, prob) {
+  n_wrong <- abs(class - prob) > 0.5
+  mean(n_wrong)
+}
+
+# call loss_func to compute the average number of wrong predictions in the (training) data
+loss_func(class = alc$high_use, prob = 0)
+
+# call loss_func to compute the average number of wrong predictions in the (training) data
+loss_func(class = alc$high_use, prob = 1)
+
+# call loss_func to compute the average number of wrong predictions in the (training) data
+loss_func(class = alc$high_use, prob = alc$probability)
+
+```
+The training error says that the average number of wrong predictions of the model is 0.21. 
+
+
+
+*7. Bonus: Perform 10-fold cross-validation on your model. Does your model have better test set performance (smaller prediction error using 10-fold cross-validation) compared to the model introduced in the Exercise Set (which had about 0.26 error). Could you find such a model? (0-2 points to compensate any loss of points from the above exercises)*
+
+```{r}
+# define a loss function (average prediction error)
+loss_func <- function(class, prob) {
+  n_wrong <- abs(class - prob) > 0.5
+  mean(n_wrong)
+}
+
+# compute the average number of wrong predictions in the (training) data
+
+loss_func(class = alc$high_use, prob = alc$probability)
+
+
+# K-fold cross-validation
+library(boot)
+cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K = nrow(alc))
+
+# average number of wrong predictions in the cross validation
+cv$delta[1]
+
+# 10-fold cross-validation
+library(boot)
+cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K=10)
+
+# average number of wrong predictions in the 10-fold cross validation
+cv$delta[1]
+```
+My model has a 10-fold cross validation gave prediction error of about 21 
+so that is smaller than the error compared to the model introduced in the Exercise Set. 
