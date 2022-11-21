@@ -116,7 +116,7 @@ coef()
 
 ```
 
-The p-value of the variables absences, goout and sex had p-value lower than 0.001 so these variables had significant relationship with the target variable high/low alcohol consumption. The variable failures had p-value lower than 0.05 but higher than 0.01 so there was some correlation but it was not as significant as with the other variables. 
+The p-value of the variables absences, goout and sexM (males) had p-value lower than 0.001 so these variables had significant relationship with the target variable high/low alcohol consumption. The variable failures had p-value lower than 0.05 but higher than 0.01 so there was some correlation but it was not as significant as with the other variables. 
 
 
 
@@ -226,5 +226,5 @@ cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K=10)
 # average number of wrong predictions in the 10-fold cross validation
 cv$delta[1]
 ```
-My model has a 10-fold cross validation gave prediction error of about 21 
+My model has a 10-fold cross validation gave prediction error of about 0.21 
 so that is smaller than the error compared to the model introduced in the Exercise Set. 

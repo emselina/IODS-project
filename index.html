@@ -411,7 +411,7 @@ use R Markdown syntax.</em></p>
 <pre class="r"><code># This is a so-called &quot;R chunk&quot; where you can write R code.
 
 date()</code></pre>
-<pre><code>## [1] &quot;Mon Nov 21 18:21:48 2022&quot;</code></pre>
+<pre><code>## [1] &quot;Mon Nov 21 18:36:26 2022&quot;</code></pre>
 </div>
 <div id="assignment-1." class="section level1">
 <h1>Assignment 1.</h1>
@@ -455,7 +455,7 @@ writing and reading R code as well as statistical methods.</li>
 advanced methods you are using.</li>
 </ul>
 <pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Mon Nov 21 18:21:48 2022&quot;</code></pre>
+<pre><code>## [1] &quot;Mon Nov 21 18:36:26 2022&quot;</code></pre>
 <p>Here we go again…</p>
 <div id="data-wrangling" class="section level2">
 <h2>Data wrangling</h2>
@@ -964,11 +964,11 @@ m %&gt;%
 coef()</code></pre>
 <pre><code>## (Intercept)    failures    absences       goout        sexM 
 ## -4.14389330  0.48932427  0.08245946  0.69801208  0.97988506</code></pre>
-<p>The p-value of the variables absences, goout and sex had p-value
-lower than 0.001 so these variables had significant relationship with
-the target variable high/low alcohol consumption. The variable failures
-had p-value lower than 0.05 but higher than 0.01 so there was some
-correlation but it was not as significant as with the other
+<p>The p-value of the variables absences, goout and sexM (males) had
+p-value lower than 0.001 so these variables had significant relationship
+with the target variable high/low alcohol consumption. The variable
+failures had p-value lower than 0.05 but higher than 0.01 so there was
+some correlation but it was not as significant as with the other
 variables.</p>
 <pre class="r"><code># compute odds ratios (OR)
 OR &lt;- coef(m) %&gt;% exp 
@@ -1092,9 +1092,9 @@ cv &lt;- cv.glm(data = alc, cost = loss_func, glmfit = m, K=10)
 
 # average number of wrong predictions in the 10-fold cross validation
 cv$delta[1]</code></pre>
-<pre><code>## [1] 0.2189189</code></pre>
+<pre><code>## [1] 0.2135135</code></pre>
 <p>My model has a 10-fold cross validation gave prediction error of
-about 21 so that is smaller than the error compared to the model
+about 0.21 so that is smaller than the error compared to the model
 introduced in the Exercise Set.</p>
 <hr />
 <p>(more chapters to be added similarly as we proceed with the
