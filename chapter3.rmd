@@ -10,7 +10,7 @@ output: html_document
 
 ## Data wrangling
 
-I did the data wrangling and the R script is found here: 
+I did the data wrangling and the R script is found here: <https://github.com/emselina/IODS-project/blob/master/create_alc.R>
 
 ## Data Analysis
 
