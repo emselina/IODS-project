@@ -45,9 +45,9 @@ gather(alc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_b
 
 ```
 
-From the dataset I chose the variables `sex`, `failures`, `absences` and `goout` and final grade (`G3`). My hypothesis is that alcohol consumption is higher in men and there is statistically significant correlation between failures (number of past class failures), absences (number of school absences), going out with friends (goot) and final grade (G3) with alcohol consumption. 
+From the dataset I chose the variables `sex`, `failures`, `absences` and `goout` and final grade (`G3`). My hypothesis is that alcohol consumption is higher in men and there is statistically significant correlation between failures (number of past class failures), absences (number of school absences), going out with friends (goot) and final grade (G3) with alcohol consumption. For example the lower the final grade the more alcohol consumption and if you go out more with your friends the alcohol consumption is higher. I hypothise also that if you have more class failurres and absences from school the alcohol consumption is higher. 
 
-Null hypothesis?
+
 
 *4. Numerically and graphically explore the distributions of your chosen variables and their relationships with alcohol consumption (use for example cross-tabulations, bar plots and box plots). Comment on your findings and compare the results of your exploration to your previously stated hypotheses. (0-5 points)*
 
