@@ -2,6 +2,8 @@
 
 ## Data wrangling
 
+The create_human.R rscipt can be found here: <https://github.com/emselina/IODS-project/blob/master/create_human.R>
+
 ## Data analysis
 
 *Load the Boston data from the MASS package. Explore the structure and the dimensions of the data and describe the dataset briefly, assuming the reader has no previous knowledge of it. Details about the Boston dataset can be seen for example here. (0-1 points)*
@@ -62,7 +64,7 @@ library(GGally)
 library(ggplot2)
 pairs(Boston)
 ```
-I think this looks ugly and I can not see anything. Lets try something else. 
+I think this looks ugly and I can not see anything, but maybe it gives some kind of overview. Lets try something else. 
 
 
 ```{r}
@@ -184,8 +186,7 @@ cor_matrix
 library(corrplot)
 corrplot(cor_matrix, method="circle", type = "upper", cl.pos = "b", tl.pos = "d",  tl.cex = 0.6)
 ```
-
-
+This correlation plot tells the correlation between variables, the bigger and more colourfull the circles are the more the is correlation between the variables. The red color indicates negative correlation and blue color positive correlation. The highest positive correlation is between tax and rad variables (0.91). The biggest negative correlation is between nox and dis variables (-0.77). Second highest negative correlation is between dis and age (0.75). 
 
 *4. Standardize the dataset and print out summaries of the scaled data. How did the variables change? Create a categorical variable of the crime rate in the Boston dataset (from the scaled crime rate). Use the quantiles as the break points in the categorical variable. Drop the old crime rate variable from the dataset. Divide the dataset to train and test sets, so that 80% of the data belongs to the train set. (0-2 points)*
 
@@ -286,10 +287,10 @@ classes = as.numeric(train$crime)
 
 # plot the lda results
 plot(lda.fit, dimen = 2, col = classes, pch = classes)
-lda.arrows(lda.fit, myscale = 1)
+lda.arrows(lda.fit, myscale = 2)
 
 ```
-
+The LDA analysis separeted the high crime classes form the low and medium high crime classes. The variable that effects the most is the rad variable = accessibility to radial highways. There is also some separation between low and medium high crime classes and the varibles that mostly affect to this are zn =  proportion of residential land zoned for lots over 25,000 sq.ft. and nox =  nitrogen oxides concentration (parts per 10 million). The LDI 1 separates 95 % of the populatio, LDI 2, 3,5 % and LDI 3 1,5 % of the population. 
 
 
 
@@ -315,7 +316,7 @@ table(correct = correct_classes , predicted = lda.pred$class)
 
 ```
 
-
+The model predicted the high crime rate well since all predicted observations are in the high crime category. The model did not predict the low crime category well. 
 
 
 *7. Reload the Boston dataset and standardize the dataset (we did not do this in the Exercise Set, but you should scale the variables to get comparable distances). Calculate the distances between the observations. Run k-means algorithm on the dataset. Investigate what is the optimal number of clusters and run the algorithm again. Visualize the clusters (for example with the pairs() or ggpairs() functions, where the clusters are separated with colors) and interpret the results. (0-4 points)*
@@ -388,6 +389,7 @@ pairs(Boston[1:7], col = km$cluster)
 pairs(Boston[8:14], col = km$cluster)
 
 ```
+The two clusters are clearly separates in some of the variables. 
 
 
 
@@ -437,9 +439,9 @@ classes <- as.numeric(boston_scaled_2$clusters)
 
 # plot the lda results
 plot(lda.km, dimen = 2, col = classes, pch = classes)
-lda.arrows(lda.km, myscale = 1)
+lda.arrows(lda.km, myscale = 3)
 ```
-
+The four clusters have separated well. The zn, rad, tax, nox and age and chas are the variables that affect the separation most. 
 
 *Super-Bonus: Run the code below for the (scaled) train data that you used to fit the LDA. The code creates a matrix product, which is a projection of the data points.*
 
@@ -474,8 +476,12 @@ Adjust the code: add argument color as a argument in the plot_ly() function. Set
 plot_ly(x = matrix_product$LD1, y = matrix_product$LD2, z = matrix_product$LD3, type= 'scatter3d', mode='markers', color = train$crime)
 ```
 
-I did not know how to draw the plot with the color is defined by the clusters of the k-means.
 
+```{r}
+plot_ly(x = matrix_product$LD1, y = matrix_product$LD2, z = matrix_product$LD3, type= 'scatter3d', mode='markers', color = km$cluster[ind])
+```
+
+The first plot shows shows that the two clusters are clearly separated. In the second plot high crime rate has separated from the other crime levels. In the third plot the fourth cluster is clearly separated from the other clusters just like in plot 2. 
 
 
 
