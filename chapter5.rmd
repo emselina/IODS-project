@@ -1,0 +1,259 @@
+# Assignment 5. 
+
+
+## Data wrangling
+
+The data wrangling part and the R scipt created are in the data folder in: <https://github.com/emselina/IODS-project/blob/master/create_human.R>
+
+
+## Data analysis
+
+I did complete the data wrangling part but just in case I used the given dataset: 
+
+```{r}
+
+
+human <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/human2.txt", sep =",", header = T)
+```
+
+
+
+
+
+*1. Show a graphical overview of the data and show summaries of the variables in the data. Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them. (0-3 points)*
+
+
+```{r}
+
+str(human)
+
+
+library(GGally)
+color_correlation <- function(data, mapping, method="p", use="pairwise", ...){
+    # Function by user20650 on Stackoverflow (https://stackoverflow.com/a/53685979)
+    # grab data
+    x <- eval_data_col(data, mapping$x)
+    y <- eval_data_col(data, mapping$y)
+
+    # calculate correlation
+    corr <- cor(x, y, method=method, use=use)
+
+    # calculate colour based on correlation value
+    # Here I have set a correlation of minus one to blue, 
+    # zero to white, and one to red 
+    colFn <- colorRampPalette(c("blue", "white", "red"), interpolate ='spline')
+    fill <- colFn(100)[findInterval(corr, seq(-1, 1, length=100))]
+
+    ggally_cor(data = data, mapping = mapping, ...) + 
+      theme_void() +
+      theme(panel.background = element_rect(fill=fill))
+  }
+
+
+ggpairs(
+  data = human,
+  upper = list(continuous = color_correlation),
+  lower = list(continuous = wrap("points", alpha = 0.3, size=0.3)),
+)
+
+summary(human)
+
+```
+
+
+
+```{r}
+library(corrplot)
+cor_matrix <- cor(human) 
+corrplot(cor_matrix, method="circle")
+```
+
+The human dataset has 155 observations and 8 variables. Edu2FM variable is ratio between females and men population with secondary education, the variable has slightly negatively skewed distribution. LaboFM is variable is the ratio between females and males labour force participation rate and the variable has slightly negatively skewed distribution. Variable Life.Exp (Life.Expectancy.at.Birth) has slighly negatively skewed distribution. Variable Edu.Exp (Expected.Years.of.Education) has almost normal distribution. Variables GNI (Gross.National.Income..GNI..per.Capita), Mat.Mor (Maternal.Mortality.Ratio), Ado.Birth (Adolescent.Birth.Rate) and ParliF (Labour.Force.Participation.Rate female) have a positively skewed distribution. 
+
+There is statistically significant positive correlation Life.Exp and Edu.Exp and also between Life.Exp and Edu2FM. There is also strong positive statistically significant correlation between Ado.Birth and Mat.Mor. There is statistically significant positive correlation also between GNI and Edu2FM, GNI and Edu.Exp and GNI and Life Exp. There is statistically significant negative correlation between Mat.Mor and Life.Exp, Mat.Mor and Edu.Exp, Mat.Mor and Edu2FM and Mat.Mor and GNI. There is also negative correlation between Ado.Birth and Edu2FM, Edu.Exp, Life.Exp and GNI. 
+
+
+
+*2. Perform principal component analysis (PCA) on the raw (non-standardized) human data. Show the variability captured by the principal components. Draw a biplot displaying the observations by the first two principal components (PC1 coordinate in x-axis, PC2 coordinate in y-axis), along with arrows representing the original variables. (0-2 points)*
+
+```{r}
+# perform principal component analysis (with the SVD method)
+pca_human <- prcomp(human)
+
+# draw a biplot of the principal component representation and the original variables
+biplot(pca_human, choices = 1:2, cex = c(0.6, 1), col = c("grey40", "deeppink2"))
+
+```
+
+
+
+
+
+*3. Standardize the variables in the human data and repeat the above analysis. Interpret the results of both analysis (with and without standardizing). Are the results different? Why or why not? Include captions (brief descriptions) in your plots where you describe the results by using not just your variable names, but the actual phenomena they relate to. (0-4 points)*
+
+
+
+```{r}
+# standardize the variables
+human_std <- scale(human)
+
+# print out summaries of the standardized variables
+summary(human_std)
+
+
+# perform principal component analysis to the standardized human data
+pca_human <- prcomp(human_std)
+
+# create and print out a summary of pca_human
+s <- summary(pca_human)
+
+
+# rounded percentanges of variance captured by each PC
+pca_pr <- round(100*s$importance[2, ], digits = 1)
+
+# print out the percentages of variance
+
+pca_pr
+
+# create object pc_lab to be used as axis labels
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
+
+
+# draw a biplot of the principal component representation and the original variables
+biplot(pca_human, choices = 1:2, cex = c(0.6, 1), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2])
+
+```
+
+The non-standardized and and standardized PCA plots are different. The PCA of the on the unstandardized variables is swamped by those variables with the largest variances and the results are meaningless. That is why the analysis is done to the standardized variables, using scale() function which centers and scales the columns of a numeric matrix. 
+
+
+
+*4.Give your personal interpretations of the first two principal component dimensions based on the biplot drawn after PCA on the standardized human data. (0-2 points)*
+
+The PCA1 explains 53.6 % of the variance and PCA2 explains 16.2 % of the variance. 
+Many of the African developing countries are clearly clustered together in the PCA plot on the right and the variables that mostly explains this cluster are Mat.Mor (Maternal.Mortality.Ratio,) and Ado.Birth (Adolescent.Birth.Rate) so the higher maternal and child mortality rate in these African countries clusters them together. 
+Many European and developed countries form another cluster on the left. The variables that mostly explain this are Edu.Exp, Edu2FM, GNI and Life.Exp. So the higher educational level and ratio of females and males that have received secondary education, Gross National Income and higher life expency explains this cluster. In addition Nordic countries including Finland form one cluster in the upper left side. This cluster is mostly expalained by the variables Parli.F and Labo.FM so the more females in parliament and ratio between females and men that participate in labor force expains this cluster. 
+
+
+*5. The tea data comes from the FactoMineR package and it is measured with a questionnaire on tea: 300 individuals were asked how they drink tea (18 questions) and what are their product's perception (12 questions). In addition, some personal details were asked (4 questions).*
+
+*Load the tea dataset and convert its character variables to factors:*
+
+*Explore the data briefly: look at the structure and the dimensions of the data. Use View(tea) to browse its contents, and visualize the data.*
+
+```{r}
+tea <- read.csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/tea.csv", stringsAsFactors = TRUE)
+
+dim(tea)
+str(tea)
+View(tea)
+```
+
+Visualization of the data:
+
+Variables 1 to 12:
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+pivot_longer(tea[1:12], cols = everything()) %>% 
+  ggplot(aes(value)) + facet_wrap("name", scales = "free") + 
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+```
+
+
+Variables 13 to 18:
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+pivot_longer(tea[13:18], cols = everything()) %>% 
+  ggplot(aes(value)) + facet_wrap("name", scales = "free") + 
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+```
+
+
+Varible age: 
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+pivot_longer(tea[19], cols = everything()) %>% 
+  ggplot(aes(value)) + 
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))+ xlab("age")
+```
+
+variables 20 to 25:
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+pivot_longer(tea[20:25], cols = everything()) %>% 
+  ggplot(aes(value)) + facet_wrap("name", scales = "free") + 
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+```
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+pivot_longer(tea[26:32], cols = everything()) %>% 
+  ggplot(aes(value)) + facet_wrap("name", scales = "free") + 
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.2, size = 7))
+```
+
+*6.Use Multiple Correspondence Analysis (MCA) on the tea data (or on just certain columns of the data, it is up to you!). Interpret the results of the MCA and draw at least the variable biplot of the analysis. You can also explore other plotting options for MCA. Comment on the output of the plots. (0-4 points)*
+
+
+```{r}
+# column names to keep in the dataset
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+
+# select the 'keep_columns' to create a new dataset
+tea_time <- select(tea, one_of(keep_columns))
+
+# look at the summaries and structure of the data
+
+summary(tea_time)
+str(tea_time)
+
+```
+
+
+
+```{r}
+# multiple correspondence analysis
+library(FactoMineR)
+mca <- MCA(tea_time, graph = FALSE)
+
+# summary of the model
+
+summary(mca)
+
+# visualize MCA
+plot(mca, invisible=c("ind"), graph.type = "classic", habillage = "quali")
+
+```
+
+
+The dimension 1 of the MCA analysis exlains 15.24 % of the variance. The dimension 2 explains 14.23 % of the variance. 
+
+Clearly milk, Earl Grey tea and sugar cluster together so people who drink Earl Grey often put milk in their tea and use sugar as well. Tea shop and unpackaged tea cluster together and usually unpackaged tea is sold more in tea shops so this explains this cluster. In addition tea bag and chain store cluster together so people buy more tea bags at chains stores. Black tea and no sugar cluster together so with black tea people do not use sugar that often. 
+
+
+Another way to plot the mca:
+
+```{r}
+library(FactoMineR)
+plotellipses(mca)
+```
+

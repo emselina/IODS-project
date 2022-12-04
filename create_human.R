@@ -34,8 +34,8 @@ colnames(hd)
 #[7] "Gross.National.Income..GNI..per.Capita"
 #[8] "GNI.per.Capita.Rank.Minus.HDI.Rank"  
 
-hd <- rename(hd, GNI = Gross.National.Income..GNI..per.Capita, HDI = Human.Development.Index..HDI., Life_Exp = Life.Expectancy.at.Birth,
-       Edu_Exp = Expected.Years.of.Education,GNI_minus_HDI = GNI.per.Capita.Rank.Minus.HDI.Rank, Edu_Mean =Mean.Years.of.Education, HDI_Rank =HDI.Rank)
+hd <- rename(hd, GNI = Gross.National.Income..GNI..per.Capita, HDI = Human.Development.Index..HDI., Life.Exp = Life.Expectancy.at.Birth,
+             Edu.Exp = Expected.Years.of.Education,GNI.minus_HDI = GNI.per.Capita.Rank.Minus.HDI.Rank, Edu.Mean =Mean.Years.of.Education, HDI.Rank =HDI.Rank)
 
 
 colnames(gii)
@@ -54,12 +54,12 @@ colnames(gii)
 
 
 
-gii <- rename(gii, GII_Rank = GII.Rank, GII =Gender.Inequality.Index..GII., Mat_Mor=Maternal.Mortality.Ratio, 
-       Ado_Birth=Adolescent.Birth.Rate, Parli=Percent.Representation.in.Parliament, Edu2_F=Population.with.Secondary.Education..Female.,
-       Edu2_M=Population.with.Secondary.Education..Male., Labo_F=Labour.Force.Participation.Rate..Female.,
-       Labo_M=Labour.Force.Participation.Rate..Male.)
+gii <- rename(gii, GII.Rank = GII.Rank, GII =Gender.Inequality.Index..GII., Mat.Mor=Maternal.Mortality.Ratio, 
+       Ado.Birth=Adolescent.Birth.Rate, Parli.F=Percent.Representation.in.Parliament, Edu2.F=Population.with.Secondary.Education..Female.,
+       Edu2.M=Population.with.Secondary.Education..Male., Labo.F=Labour.Force.Participation.Rate..Female.,
+       Labo.M=Labour.Force.Participation.Rate..Male.)
 
-gii <- mutate(gii, Edu2_ratio = Edu2_F / Edu2_M, Labo_ratio = Labo_F / Labo_M)
+gii <- mutate(gii, Edu2.FM = Edu2.F / Edu2.M, Labo.FM = Labo.F / Labo.M)
 
 # join two data sets
 
@@ -73,9 +73,57 @@ human <- hd_gii
 
 write.csv(human, "data/human.csv", row.names = FALSE)
 
+
+#load human data 
 human <- read.csv("data/human.csv")
 dim(human)
+str(human)
+
+library(stringr)
+library(dplyr)
+ 
+
+GNI_n <- str_replace(human$GNI, pattern=",", replace = "") %>% as.numeric
+
+#Mutate
+human <- mutate(human, GNI = GNI_n)
+
+# columns to keep
+keep <- c("Country", "Edu2.FM", "Labo.FM", "Edu.Exp", "Life.Exp", "GNI", "Mat.Mor", "Ado.Birth", "Parli.F")
+
+# select the 'keep' columns
+human <- select(human, one_of(keep))
+
+
+# print out a completeness indicator of the 'human' data
+complete.cases(human)
+
+# print out the data along with a completeness indicator as the last column
+data.frame(human[-1], comp = complete.cases(human))
+
+# filter out all rows with NA values
+human_ <- filter(human, complete.cases(human))
+
+
+#Filter out region from human dataset
+
+
+# define the last indice we want to keep
+last <- nrow(human_) - 7
+
+# choose everything until the last 7 observations
+human_ <- human[1:last,]
+
+# add countries as rownames
+rownames(human_) <- human_$Country
+
+  
+#remove Country column from human_ dataset
+human_ <- dplyr::select(human_, -Country)
+
+dim(human_)
+#155   8
 
 
 
-
+write.csv(human_, "data/human.csv", row.names = FALSE)
