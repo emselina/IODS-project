@@ -8,8 +8,7 @@ The data wrangling part and the R scipt created are in the data folder in: <http
 
 ## Data analysis
 
-
-I did complete the data wrangling part but just in case I used the given dataset : 
+I did complete the data wrangling part but just in case I used the given dataset: 
 
 ```{r}
 
