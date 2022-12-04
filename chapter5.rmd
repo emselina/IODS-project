@@ -8,7 +8,8 @@ The data wrangling part and the R scipt created are in the data folder in: <http
 
 ## Data analysis
 
-I did complete the data wrangling part but just in case I used the given dataset: 
+
+I did complete the data wrangling part but just in case I used the given dataset : 
 
 ```{r}
 
@@ -93,7 +94,7 @@ biplot(pca_human, choices = 1:2, cex = c(0.6, 1), col = c("grey40", "deeppink2")
 
 
 
-```{r}
+```{r, fig.width=12, fig.height=12 }
 # standardize the variables
 human_std <- scale(human)
 
@@ -153,7 +154,7 @@ Visualization of the data:
 
 Variables 1 to 12:
 
-```{r}
+```{r, fig.width=10}
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -190,7 +191,7 @@ pivot_longer(tea[19], cols = everything()) %>%
 
 variables 20 to 25:
 
-```{r}
+```{r, fig.width=10}
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -201,14 +202,17 @@ pivot_longer(tea[20:25], cols = everything()) %>%
 ```
 
 
-```{r}
+
+Variables 26 to 32:
+
+```{r, fig.width=10, fig.height=12}
 library(ggplot2)
 library(dplyr)
 library(tidyr)
 pivot_longer(tea[26:32], cols = everything()) %>% 
   ggplot(aes(value)) + facet_wrap("name", scales = "free") + 
   geom_bar() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.2, size = 7))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7))
 ```
 
 *6.Use Multiple Correspondence Analysis (MCA) on the tea data (or on just certain columns of the data, it is up to you!). Interpret the results of the MCA and draw at least the variable biplot of the analysis. You can also explore other plotting options for MCA. Comment on the output of the plots. (0-4 points)*
@@ -230,7 +234,7 @@ str(tea_time)
 
 
 
-```{r}
+```{r, fig.width=10, fig.height=12}
 # multiple correspondence analysis
 library(FactoMineR)
 mca <- MCA(tea_time, graph = FALSE)
@@ -252,7 +256,7 @@ Clearly milk, Earl Grey tea and sugar cluster together so people who drink Earl 
 
 Another way to plot the mca:
 
-```{r}
+```{r, fig.width=6, fig.height=8}
 library(FactoMineR)
 plotellipses(mca)
 ```
